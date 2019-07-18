@@ -6,16 +6,22 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
+variables:
+  imageName: 'ramesh/nodejs-app'
+  dockerId: 'rapiddevpro'
 
 steps:
-- task: NodeTool@0
+- script: docker build -f Dockerfile -t $(imageName) .
+- script: docker login -u $(dockerId) -p $(pswd)
+- script: docker push $(imageName)
+- task: CopyFiles@2
   inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
-
-- script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+    sourceFolder: $(Build.SourcesDirectory)
+    contents: '**/nodejs-app-deployment.yaml' 
+    targetFolder: $(Build.ArtifactStagingDirectory)
+    overWrite: true
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+    artifactName: 'drop' 
+  displayName: 'docker build'
