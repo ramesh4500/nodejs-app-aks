@@ -7,7 +7,7 @@ trigger:
 - master
 
 variables:
-  imageName: 'ramesh/nodejs-app'
+  imageName: 'rameshamadoru/ramesh_nodejs-app'
   dockerId: 'rameshamadoru'
 
 steps:
